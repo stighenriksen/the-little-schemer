@@ -28,6 +28,7 @@
 	       (cond
 		((null lat) ())
 		((eq (car lat) old) (cons (car lat) (cons new (cdr lat))))
+
 		(t (cons (car lat) (firstR new old (cdr lat))))))
 
 (defun insertL(new old lat)
@@ -178,3 +179,52 @@
                                   (t (cons (car l) (rember* a (cdr l))))))
                 (t (cons (rember* a (car l)) (rember* a (cdr l))))))
 
+(defun insertR* (new old l)
+               (cond
+                ((null l) ())
+                ((atom? (car l))
+                 (cond
+                  ((eq old (car l)) (cons old (cons new (insertR* new old (cdr l)))))
+                  (t (cons (car l) (insertR* new old (cdr l))))))
+                (t (cons (insertR* new old (car l)) (insertR* new old (cdr l))))))
+
+(defun occur* (a l)
+               (cond
+                ((null l) 0)
+                ((atom? (car l)) 
+                 (cond
+                  ((eq a (car l)) (1+ (occur* a (cdr l))))
+                  (t (occur* a (cdr l)))))
+                (t (+ (occur* a (car l)) (occur* a (cdr l))))))
+
+(defun subst* (new old l)
+               (cond
+                ((null l) ())
+                ((atom? (car l))
+                 (cond
+                  ((eq old (car l)) (cons new (subst* new old (cdr l))))
+                  (t (cons (car l) (subst* new old (cdr l))))))
+                (t (cons (subst* new old (car l)) (subst* new old (cdr l))))))
+
+(defun insertL* (new old l)
+               (cond 
+                ((null l) ())
+                ((atom? (car l))
+                 (cond 
+                  ((eq old (car l)) (cons new (cons old (insertL* new old (cdr l)))))
+                  (t (cons (car l) (subst* new old (cdr l))))))
+                (t (cons (insertL* new old (car l)) (insertL* new old (cdr l))))))
+
+(defun member* (a l)
+               (cond
+                ((null l) nil)
+                ((atom? (car l))
+                 (or 
+                  (eq a (car l))
+                  (member* a (cdr l))))
+                (t (or (member* a (car l)) (member* a (cdr l))))))
+
+(defun leftmost (l)
+               (cond
+                ((atom? (car l)) (car l))
+                (t (leftmost (car l)))))
