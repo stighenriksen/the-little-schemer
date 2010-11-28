@@ -247,3 +247,51 @@
                 ((equal s (car l)) (cdr l))
                 ((cons (car l) (rember2 s (cdr l))))))
  
+(defun numbered? (aexp)
+               (cond
+                ((atom? aexp) (number? aexp))
+                ((and (numbered? (car aexp)) (numbered? (car (cdr (cdr aexp))))))))
+
+(defun value (nexp)
+                 (cond
+                  ((atom? nexp) nexp )
+                  ((eq (car (cdr nexp)) '+) (+ (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                  ((eq (car (cdr nexp)) '*) (* (value (car nexp)) (value (car (cdr (cdr nexp))))))
+                  ((eq (car (cdr nexp)) '!) (power (value (car nexp)) (value (car (cdr (cdr nexp))))))))
+
+
+(defun 1st-sub-exp (aexp)
+                 (cond
+                 ( t (car (cdr aexp)))))
+
+(defun 2nd-sub-exp (aexp)
+                 (cond
+                  (t (car (cdr (cdr aexp))))))
+
+(defun operator (aexp)
+                 (cond
+                  (t (car aexp))))
+
+(defun value (nexp)
+                 (cond
+                  ((atom? nexp) nexp)
+                  ((eq (operator nexp) '+) (+ (value (1st-sub-exp nexp)) (value (2nd-sub-exp nexp))))
+                  ((eq (operator nexp) '*) (* (value (1st-sub-exp nexp)) (value (2nd-sub-exp nexp))))
+                  ((eq (operator nexp) '!) (power (value (1st-sub-exp nexp)) (value (2nd-sub-exp nexp))))))
+
+(defun sero? (n)
+                 (cond
+                  (t (null n))))
+
+(defun edd1 (n)
+                 (cond
+                  (t (cons '() n))))
+
+(defun zub1 (n)
+                 (cond
+                  (t (cdr n))))
+
+(defun stigplus (n m)
+                 (cond
+                  ((sero? m) n)
+                  ((cons (edd1 n) (stigplus n (cdr m))))))
