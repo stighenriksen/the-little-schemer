@@ -228,3 +228,22 @@
                (cond
                 ((atom? (car l)) (car l))
                 (t (leftmost (car l)))))
+
+(defun eqlist (l1 l2)
+  (cond
+   ((and (null l1) (null l2)) t)
+   ((or (null l1) (null l2)) nil)
+   ((and (equal (car l1) (car l2)) (eqlist (cdr l1) (cdr l2))))))
+
+(defun equalsexpr (s1 s2)
+  (cond
+   ((and (atom? s1) (atom? s2)) (eq s1 s2))
+   ((or (atom? s1) (atom? s2)) nil)
+   ((eqlist s1 s2))))
+
+(defun rember2 (s l)
+               (cond
+                ((null l) ())
+                ((equal s (car l)) (cdr l))
+                ((cons (car l) (rember2 s (cdr l))))))
+ 
