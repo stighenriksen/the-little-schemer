@@ -295,3 +295,20 @@
                  (cond
                   ((sero? m) n)
                   ((cons (edd1 n) (stigplus n (cdr m))))))
+
+(defun set? (lat)
+  (cond
+   ((null lat) t)
+   ((member* (car lat) (cdr lat)) nil)
+   (t (set? (cdr lat)))))
+
+(defun makeset? (lat)
+  (cond
+   ((null lat) ())
+   ((member* (car lat) (cdr lat)) (makeset? (cdr lat)))
+   ((cons (car lat) (makeset? (cdr lat))))))
+
+(defun makeset? (lat)
+  (cond
+   ((null lat) ())
+   (t (cons (car lat) (makeset? (multirember (car lat) (cdr lat)))))))
