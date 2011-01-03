@@ -312,3 +312,70 @@
   (cond
    ((null lat) ())
    (t (cons (car lat) (makeset? (multirember (car lat) (cdr lat)))))))
+
+
+
+(defun subset? (set1 set2)
+               (cond
+                ((null set1) t)
+                ((and (member (car set1) set2) (subset? (cdr set1) set2)))))
+
+(defun eqset? (set1 set2)
+               (cond
+                ((and (subset? set1 set2) (subset? set2 set1)))))
+
+(defun intersect? (set1 set2)
+               (cond
+                ((null set1) nil)
+                ((member (car set1) set2) t)
+                ((intersect? (cdr set1) set2))))
+
+(defun intersect (set1 set2)
+               (cond
+                ((null set1) ())
+                ((member (car set1) set2) (cons (car set1) (intersect (cdr set1) set2)))
+                ((intersect (cdr set1) set2))))
+
+(defun unionstig (set1 set2)
+               (cond
+                ((null set1) ())
+                ((member (car set1) set2) (union (cdr set1) set2))
+                ((cons (car set1) (union (cdr set1) set2)))))
+
+(defun intersectall (l-set)
+                 (cond
+                  ((null (cdr l-set)) (car l-set))
+                  ((intersect (car l-set) (intersectall (cdr l-set))))))
+
+(defun a-pair? (x)
+                (cond
+                 ((atom? x) nil)
+                 ((null x) nil)
+                 ((null (cdr x)) nil)
+                 ((null (cdr (cdr x))) t)))
+
+(defun build (s1 s2) 
+                (cond
+                 ((cons s1 s2))))
+
+(defun fun? (rel)
+                (cond
+                 ((set? (firsts rel)))))
+
+(defun revrel (rel)
+                (cond
+                 ((null rel) ())
+                 ((cons (build (second (car rel)) (first (car rel))) (revrel (cdr rel))))))
+
+(defun seconds (s)
+        (cond
+         ((null s) ())
+         ((cons (cdr (car s)) (seconds (cdr s))))))
+
+(defun fullfun? (fun)
+        (cond
+         ((set? (seconds fun)))))
+
+(defun one-to-one? (fun)
+        (cond
+         (fun? (revrel fun))))
