@@ -379,3 +379,84 @@
 (defun one-to-one? (fun)
         (cond
          (fun? (revrel fun))))
+
+
+
+(defun eq?-c (a)
+                (function
+                 (lambda (x)
+                   (eq x a))))
+
+ 
+(defun rember-f (test?)
+        (function 
+         (lambda (a l)
+           (cond
+           ((null l) ())
+           ((funcall test? a (car l)) (cdr l))
+           (t (cons (car l) (funcall (rember-f test?) a (cdr l))))))))
+
+
+(defun insertL-f (test?)
+        (function
+         (lambda (new old l)
+           (cond
+            ((null l) ())
+            ((funcall test? (car l) old) (cons new (cons old (cdr l))))
+            (t (cons (car l) (funcall (insertL-f test?) new old (cdr l))))))))
+
+(defun insertR-f (test?)
+        (function
+         (lambda (new old l)
+           (cond
+            ((null l) ())
+            ((funcall test? old (car l)) (cons old (cons new (cdr l))))
+            (t (cons (car l) (funcall (insertR-f test?) new old (cdr l))))))))
+
+(defun seql (new old l)
+       (cond
+        ((cons new (cons old l)))))
+
+(defun seqr (new old l)
+       (cond
+        ((cons old (cons new l)))))
+
+(defun seqs (new old l)
+        (cons new l))
+
+(defun insert-g (seq)
+        (function
+         (lambda (new old l)
+           (cond
+            ((null l) ())
+            ((eq old (car l)) (funcall seq new old (cdr l)))
+            (t (cons (car l) (funcall (insert-g seq) new old (cdr l))))))))
+
+(setq stigsubst (insert-g 'seqs))
+
+
+(defun atom-to-function (x)
+          (cond
+           ((eq x '+) '+)
+           ((eq x '*) '*)
+           (t 'expt)))
+
+(defun value2 (nexp)
+       (cond
+        ((atom? nexp) nexp)
+        (t (funcall (atom-to-function (operator nexp)) (value (1st-sub-exp nexp)) (value (2nd-sub-exp nexp))))))
+
+(defun multirember-f (test?)
+       (lambda (a lat)
+         (cond
+          ((null lat) ())
+          ((funcall test? a (car lat)) (funcall (multirember-f test?) a (cdr lat)))
+          (t (cons (car lat) (funcall (multirember-f test?) a (cdr lat)))))))
+
+(setq multirember-eq? (multirember-f 'eq))
+
+(defun multirember-f-2 (test? lat)
+        (cond
+         ((null lat) ())
+         ((funcall test? (car lat)) (multirember-f test? (cdr lat)))
+         (t (cons (car lat) (multirember-f test? (cdr lat))))))
