@@ -460,3 +460,50 @@
          ((null lat) ())
          ((funcall test? (car lat)) (multirember-f test? (cdr lat)))
          (t (cons (car lat) (multirember-f test? (cdr lat))))))
+
+(defun multiinsertLR (new oldL oldR lat)
+        (cond
+         ((null lat) ())
+         ((eq (car lat) oldL) (cons new (cons oldL (multiinsertLR new oldL oldR (cdr lat)))))
+         ((eq (car lat) oldR) (cons oldR (cons new (multiinsertLR new oldL oldR (cdr lat)))))
+         (t (cons (car lat) (multiinsertLR (new oldL oldR (cdr lat)))))))
+
+(defun multiinsertLRandco (new oldL oldR lat col)
+  (cond
+   ((null lat) (col () 0 0) ())
+   ((eq (car lat) oldL) (multiinsertLR new oldL oldR (cdr lat) 
+                                                            (lambda (newlat leftins rightins)
+                                                              (col (cons new (cons oldL newlat)) (+leftins 1) rightins))))
+   ((eq (car lat) oldR) (cons oldR (cons new (multiinsertLR new oldL oldR (cdr lat)
+                                                            (lambda (newlat leftins rightins)
+                                                              (col (cons oldR (cons new newlat)) leftins (+rightins 1))))))
+   (t (cons (car lat) (multiinsertLR (new oldL oldR (cdr lat))
+                                     (lambda (newlat leftins rightins)
+                                       (col (cons (car lat) newlat) leftins rightins))))))))
+
+(defun even? (n)
+       (= (* (/ n 2) 2) n))
+
+(defun evens-only* (l)
+  (cond
+   ((null l) ())
+   ((atom? (car l)) 
+    (cond
+     ((even? (car l)) (cons (car l) (evens-only? (cdr l))))
+     (t (evens-only? (cdr l)))))
+   (t (cons (evens-only* (car l)) (evens-only* (cdr l))))))
+
+(defun evens-only*&co (l col)
+  (cond
+   ((null l) (col () 1 0))
+   ((atom? (car l)) 
+    (cond
+     ((even? (car l)) (evens-only*&co (cdr l)
+                                   (lambda (newlat prodeven sumodd)
+                                     (col (cons (car l) newlat) (* (car lat) prodeven sumodd))))
+     (t (evens-only*&co (cdr l) 
+                     (lambda (newlat prodeven sumodd)
+                       (col newlat prodeven (+ (car lat) sumodd))))))))
+   (t (evens-only*&co (car l) (lambda (newlat prodeven sumodd)
+                                (evens-only*&co (cdr l) (lambda (carnewlat carprodeven carsumodd)
+                                                          (col (cons newlat carnewlat) (* prodeven carprodeven) (+sumodd carsumodd)))))))))
