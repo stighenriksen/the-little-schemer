@@ -507,3 +507,25 @@
    (t (evens-only*&co (car l) (lambda (newlat prodeven sumodd)
                                 (evens-only*&co (cdr l) (lambda (carnewlat carprodeven carsumodd)
                                                           (col (cons newlat carnewlat) (* prodeven carprodeven) (+sumodd carsumodd)))))))))
+
+                      
+
+(defun looking (a lat)
+        (keep-looking a (pick 1 lat) lat))
+
+(defun keep-looking (a sorn lat)
+       (cond
+        ((numberp sorn) (keep-looking a (pick sorn lat) lat))
+        (t (eq sorn a))))
+
+
+(defun shift (pair)
+        (build (first (first pair))
+               (build (second (first pair))
+                      (second pair))))
+
+
+(defun length* (pora)
+        (cond
+         ((atom? pora) 1)
+         (t (+ (length* (first pora)) (length* (second pora))))))
