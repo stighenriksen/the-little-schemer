@@ -514,7 +514,7 @@
         (keep-looking a (pick 1 lat) lat))
 
 (defun keep-looking (a sorn lat)
-       (cond
+  (cond
         ((numberp sorn) (keep-looking a (pick sorn lat) lat))
         (t (eq sorn a))))
 
@@ -524,8 +524,6 @@
                (build (second (first pair))
                       (second pair))))
 
-
-(defun length* (pora)
-        (cond
-         ((atom? pora) 1)
-         (t (+ (length* (first pora)) (length* (second pora))))))
+(defun new-entry (names values)
+       (cond
+        (t (cons names (cons values ())))))
